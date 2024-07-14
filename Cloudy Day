@@ -1,0 +1,54 @@
+import math
+import os
+import random
+import re
+import sys
+
+# Complete the maxPeopleCovered function below.
+from collections import defaultdict
+
+def maxPeopleCovered(villages, clouds_start, clouds_end):
+    villages = sorted(villages)
+    clouds_start = sorted(clouds_start)
+    clouds_end = sorted(clouds_end)
+
+    start_index = 0
+    end_index = 0
+    active_clouds = set()
+
+    cloud_population = defaultdict(int)
+    uncovered_population = 0
+    for village_index in range(len(villages)):
+        village_location = villages[village_index][0]
+        while start_index < len(clouds_start) and clouds_start[start_index][0] <= village_location:
+            active_clouds.add(clouds_start[start_index][1])
+            start_index += 1
+        while end_index < len(clouds_end) and clouds_end[end_index][0] < village_location:
+            active_clouds.remove(clouds_end[end_index][1])
+            end_index += 1
+        if len(active_clouds) == 1:
+            villages[village_index][2] = list(active_clouds)[0]
+            cloud_population[list(active_clouds)[0]] += villages[village_index][1]
+        elif len(active_clouds) == 0:
+            uncovered_population += villages[village_index][1]
+
+    return max(cloud_population.values(), default=0) + uncovered_population
+
+def main():
+    num_villages = int(input().strip())
+    populations = [int(x) for x in input().strip().split()]
+    locations = [int(x) for x in input().strip().split()]
+    villages = [[locations[i], populations[i], -1] for i in range(num_villages)]
+    
+    num_clouds = int(input().strip())
+    cloud_positions = [int(x) for x in input().strip().split()]
+    cloud_ranges = [int(x) for x in input().strip().split()]
+    clouds_start = [[cloud_positions[i] - cloud_ranges[i], i] for i in range(num_clouds)]
+    clouds_end = [[cloud_positions[i] + cloud_ranges[i], i] for i in range(num_clouds)]
+    
+    result = maxPeopleCovered(villages, clouds_start, clouds_end)
+    print(result)
+
+if _name_ == "_main_":
+    main()
+cloudy
