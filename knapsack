@@ -1,0 +1,37 @@
+def max_sum_in_time(num_cases, cases):
+    results = []
+
+    for case in cases:
+        start_time, target_time = case[0]
+        events = case[1]
+        
+        # Initialize dp array
+        dp = [0] * (target_time + 1)
+
+        for value in events:
+            for time in range(value, target_time + 1):
+                dp[time] = max(dp[time], dp[time - value] + value)
+        
+        results.append(dp[target_time])
+    
+    return results
+
+import sys
+
+input = sys.stdin.read
+data = input().splitlines()
+
+num_cases = int(data[0])
+cases = []
+
+line_index = 1
+for _ in range(num_cases):
+    start_time, target_time = map(int, data[line_index].split())
+    events = list(map(int, data[line_index + 1].split()))
+    cases.append(((start_time, target_time), events))
+    line_index += 2
+
+results = max_sum_in_time(num_cases, cases)
+
+for result in results:
+    print(result)
